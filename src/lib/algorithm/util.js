@@ -1,64 +1,71 @@
-module.exports = {initializeEdges, getVisGraph}
+const { isMatrixValid } = require('@/lib/input-processing/inputProcessing');
+module.exports = { initializeEdges, getVisGraph, removeVertex, addVertex };
 
 function initializeEdges(adjMatrix) {
-    const edges = []
-    for (let i = 0; i < adjMatrix.length; i++) {
-        for (let j = 0; j < i + 1; j++) {
-            if (adjMatrix[i][j] === 0) continue
+  const edges = [];
+  for (let i = 0; i < adjMatrix.length; i++) {
+    for (let j = 0; j < i + 1; j++) {
+      if (adjMatrix[i][j] === 0) continue;
 
-            edges.push({
-                vertex: [i, j],
-                weight: adjMatrix[i][j]
-            })
-        }
+      edges.push({
+        vertex: [i, j],
+        weight: adjMatrix[i][j],
+      });
     }
-    return edges
+  }
+  return edges;
 }
 
 function getVisGraph(adjMatrix) {
-    const nodes = []
-    for (let i = 0; i < adjMatrix.length; i++) {
-        nodes.push({
-            id: i,
-            label: `${i}`
-        })
-    }
+  const nodes = [];
+  for (let i = 0; i < adjMatrix.length; i++) {
+    nodes.push({
+      id: i,
+      label: `${i}`,
+    });
+  }
 
-    const edges = []
-    for (let i = 0; i < adjMatrix.length; i++) {
-        for (let j = 0; j < i + 1; j++) {
-            if (adjMatrix[i][j] === 0) continue
-            edges.push({
-                from: i,
-                to: j,
-                label: `${adjMatrix[i][j]}`
-            })
-        }
+  const edges = [];
+  for (let i = 0; i < adjMatrix.length; i++) {
+    for (let j = 0; j < i + 1; j++) {
+      if (adjMatrix[i][j] === 0) continue;
+      edges.push({
+        from: i,
+        to: j,
+        label: `${adjMatrix[i][j]}`,
+      });
     }
-  
-    const data = {nodes, edges}
-    
-    return data
+  }
+
+  const data = { nodes, edges };
+
+  return data;
 }
 
 function removeVertex(adjMatrix, vertexIdx) {
-    adjMatrix.splice(vertexIdx, 1)
-    adjMatrix.forEach(row => row.splice(vertexIdx, 1))
-    return adjMatrix
+  const newMatrix = JSON.parse(JSON.stringify(adjMatrix));
+  newMatrix.splice(vertexIdx, 1);
+  newMatrix.forEach((row) => row.splice(vertexIdx, 1));
+  return newMatrix;
 }
 
 function addVertex(adjMatrix, weightDict) {
-    const newVertexIdx = adjMatrix.length
-    adjMatrix.forEach(row => row.push(0))
-    adjMatrix.push(Array(newVertexIdx + 1).fill(0))
+  const newMatrix = JSON.parse(JSON.stringify(adjMatrix));
+  const newVertexIdx = newMatrix.length;
+  newMatrix.forEach((row) => row.push(0));
+  newMatrix.push(Array(newVertexIdx + 1).fill(0));
 
-    for (key in weightDict) {
-        const i = newVertexIdx
-        const j = key
-        adjMatrix[i][j] = weightDict[key]
-        adjMatrix[j][i] = weightDict[key]
-    }
-    return adjMatrix
+  for (const key in weightDict) {
+    const i = newVertexIdx;
+    const j = key;
+    newMatrix[i][j] = weightDict[key];
+    newMatrix[j][i] = weightDict[key];
+  }
+
+  if (!isMatrixValid(newMatrix)) {
+    throw new Error('Invalid value');
+  }
+  return newMatrix;
 }
 
 // const example = [
