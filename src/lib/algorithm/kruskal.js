@@ -1,33 +1,23 @@
-function kruskalMST(graph) {
-    // Gather all edges in an array
-    const edges = []
-    for (let i = 0; i < graph.length; i++) {
-        for (let j = 0; j < i + 1; j++) {
-            if (graph[i][j] === 0) continue
+const {initializeEdges} = require('./util.js')
+module.exports = {kruskalMST}
 
-            edges.push({
-                vertex: [i, j],
-                weight: graph[i][j]
-            })
-        }
-    }
-
-    // Sort edges ascendingly based on weight
+function kruskalMST(adjMatrix) {
+    // Gather all edges in an array sorted ascendingly by weight
+    const edges = initializeEdges(adjMatrix)
     edges.sort((a, b) => a.weight - b.weight)
     console.table(edges)
 
-    // Initialize parent and rank information
+    // Initialize root, rank, and paernts information
     const root = []
     const rank = []
-    for (let i = 0; i < graph.length; i++) {
+    for (let i = 0; i < adjMatrix.length; i++) {
         root.push(i)
         rank.push(0)
     }
 
+    // Traverse through all edges and check if we can add it to the tree
     const minimumSpanningTree = []
-
     let totalCost = 0
-    // Traverse through all edges and see if we can add it to the tree
     for (const edge of edges) {
         const i = edge.vertex[0]
         const j = edge.vertex[1]
@@ -38,7 +28,8 @@ function kruskalMST(graph) {
             totalCost += weight
         }
     }
-    return minimumSpanningTree
+    const mstMatrix = reconstructMstMatrix(minimumSpanningTree, adjMatrix)
+    return mstMatrix
 }
 
 function findRoot(vertex, root) {
@@ -70,8 +61,29 @@ function union(i, j, root, rank) {
     return true
 }
 
-const {getMatrixFromFile} = require('../file-processing/fileProcessing')
+function reconstructMstMatrix(minimumSpanningTree, initialGraph) {
+    // Initialize VxV size array with all elements = 0 
+    const mstMatrix = []
+    for (let i = 0; i < initialGraph.length; i++) {
+      const row = []
+      for (let j = 0; j < initialGraph.length; j++) {
+        row.push(0)
+      }
+      mstMatrix.push(row)
+    }
 
-let graph = getMatrixFromFile(__dirname + '/example.txt')
+    // Assign all weight of the minimum spanning tree into the matrix
+    for (let edge of minimumSpanningTree) {
+        const i = edge[0]
+        const j = edge[1]
+        mstMatrix[i][j] = initialGraph[i][j]
+        mstMatrix[j][i] = initialGraph[i][j]
+    }
+    return mstMatrix
+}
 
-console.log(kruskalMST(graph))
+// const {getMatrixFromFile} = require('../file-processing/fileProcessing')
+
+// let adjMatrix = getMatrixFromFile('../file-processing/example.txt')
+
+// console.table(kruskalMST(adjMatrix))

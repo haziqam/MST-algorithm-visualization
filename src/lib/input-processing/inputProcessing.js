@@ -1,16 +1,13 @@
-const fs = require('fs')
-
-function getMatrixFromFile(filePath) {
-    const array = fileToArray(filePath)
+export function getMatrixFromString(str) {
+    const array = stringToArray(str)
     const matrix = arrayToMatrix(array)
     if (isMatrixValid(matrix)) {
         return matrix
     }
 }
 
-function fileToArray(filePath) {
-    const data = fs.readFileSync(filePath, 'utf8');
-    const rows = data.split('\n');
+function stringToArray(str) {
+    const rows = str.split('\n');
     for (let i = 0; i < rows.length; i++) {
         rows[i] = rows[i].replace('\r', '')
     }
@@ -56,5 +53,3 @@ function isMatrixValid(matrix) {
     }
     return true
 }
-
-module.exports = {getMatrixFromFile}

@@ -1,96 +1,81 @@
-// function test() {
-//     return 10;
-// }
+module.exports = {primMST}
 
-// module.exports = {test}
-
-
-// A utility function to find the vertex with
-// minimum key value, from the set of vertices
-// not yet included in MST
-function minKey(key, visitedSet)
-{
-	// Initialize min value
-	let min = Number.MAX_VALUE, min_index;
-
-	for (let v = 0; v < V; v++)
-		if (visitedSet[v] == false && key[v] < min)
-			min = key[v], min_index = v;
-
-	return min_index;
-}
-
-// A utility function to print the
-// constructed MST stored in parent[]
-function printMST(parent, graph)
-{
-	console.log("Edge 	 Weight");
-	for (let i = 1; i < V; i++)
-		console.log(parent[i] + " - " + i + "  " + graph[i][parent[i]]);
-}
-
-// Function to construct and print MST for
-// a graph represented using adjacency
-// matrix representation
-function primMST(graph)
-{
-    let V = graph.length
-	// Array to store constructed MST
-	let parent = [];
-	
-	// Key values used to pick minimum weight edge in cut
-	let key = [];
-	
-	// To represent set of vertices included in MST
-	let visitedSet = [];
+function primMST(adjMatrix) {
+    let numOfVertices = adjMatrix.length
+	// Array to store constructed MST, parent[i] = parent of vertex i.
+	// parent[i] = -1 means it has no parent
+	let parent = []
+	// Key[i] = nearest neighbor of vertex i that hasn't been visited
+	let key = []
+	// visitedSet[i] = false means vertex i hasn't been visited
+	let visitedSet = []
 
 	// Initialize all keys as INFINITE
-	for (let i = 0; i < V; i++)
-		key[i] = Number.MAX_VALUE, visitedSet[i] = false;
+	for (let i = 0; i < numOfVertices; i++) {
+		key[i] = Infinity
+		visitedSet[i] = false;
+	}
 
-	// Always include first 1st vertex in MST.
-	// Make key 0 so that this vertex is picked as first vertex.
+	// Start from the first vertex (index 0)
 	key[0] = 0;
-	parent[0] = -1; // First node is always root of MST
+	parent[0] = -1; 
 
-	// The MST will have V vertices
-	for (let count = 0; count < V - 1; count++)
-	{
-		// Pick the minimum key vertex from the
-		// set of vertices not yet included in MST
-		let u = minKey(key, visitedSet);
-
-		// Add the picked vertex to the MST Set
+	for (let count = 0; count < numOfVertices - 1; count++) {
+		let u = minKey(key, visitedSet, numOfVertices);
 		visitedSet[u] = true;
 
 		// Update key value and parent index of
 		// the adjacent vertices of the picked vertex.
-		// Consider only those vertices which are not
-		// yet included in MST
-		for (let v = 0; v < V; v++)
-
-			// graph[u][v] is non zero only for adjacent vertices of m
-			// visitedSet[v] is false for vertices not yet included in MST
-			// Update the key only if graph[u][v] is smaller than key[v]
-			if (graph[u][v] > 0 && !visitedSet[v] && graph[u][v] < key[v])
-				parent[v] = u, key[v] = graph[u][v];
+		for (let v = 0; v < numOfVertices; v++)
+			if (adjMatrix[u][v] > 0 && !visitedSet[v] && adjMatrix[u][v] < key[v]) {
+				parent[v] = u
+				key[v] = adjMatrix[u][v]
+			}
 	}
 
-	// print the constructed MST
-	printMST(parent, graph);
+	const mstMatrix = reconstructMstMatrix(parent, adjMatrix);
+	return mstMatrix
 }
 
-// Driver code
-	
-let graph = [
-    [0, 1, 2, 5],
-    [1, 0, 0, 3],
-    [2, 0, 0, 6],
-    [5, 3, 6, 0]
-]
+function minKey(key, visitedSet, numOfVertices) {
+	let min = Infinity
+	let min_index
 
-// Print the solution
-primMST(graph);
+	for (let v = 0; v < numOfVertices; v++) {
+		if (visitedSet[v] === false && key[v] < min) {
+			min = key[v]
+			min_index = v;
+		}
+	}
+
+	return min_index;
+}
+
+function reconstructMstMatrix(parentList, initialAdjMatrix) {
+	// Initialize VxV size array with all elements = 0 
+	const mstMatrix = []
+	for (let i = 0; i < initialAdjMatrix.length; i++) {
+		const row = [];
+		for (let j = 0; j < initialAdjMatrix.length; j++) {
+		row.push(0);
+		}
+		mstMatrix.push(row);
+	}
+
+	// Fill up the weight
+	for (let i = 0; i < parentList.length; i++) {
+		if (parentList[i] === -1) continue
+		mstMatrix[i][parentList[i]] = initialAdjMatrix[i][parentList[i]]
+		mstMatrix[parentList[i]][i] = initialAdjMatrix[i][parentList[i]]
+	}
+	return mstMatrix
+}
+
+// const {getMatrixFromFile} = require('../file-processing/fileProcessing')
+
+// let adjMatrix = getMatrixFromFile('../file-processing/example.txt')
+// console.table(adjMatrix)
+// console.table(primMST(adjMatrix))
 
 
 

@@ -7,6 +7,13 @@
   min-height: 100vh;
 }
 
+.graphImg { 
+  width: 600px;
+  height: 400px; 
+  border: 1px solid gray; 
+  border-radius: 5px;
+}
+
 .description {
   display: inherit;
   justify-content: inherit;
