@@ -3,15 +3,14 @@ import { FileUpload } from 'primereact/fileupload';
 import { Message } from 'primereact/message';
 import { Panel } from 'primereact/panel';
 import { Toast } from 'primereact/toast';
+import 'primeicons/primeicons.css';
+import styles from './components.module.css';
 const {
   getMatrixFromString,
-  isMatrixValid,
 } = require('@/lib/input-processing/inputProcessing');
 
 export function FileHandler(props) {
   const fileUploadRef = useRef(null);
-  // const [errorMsg, setErrorMsg] = useState('');
-  // const [showErrorMsg, setShowErrorMsg] = useState(false);
   const [currentFile, setCurrentFile] = useState('');
   const messageToast = useRef(null);
 
@@ -37,6 +36,7 @@ export function FileHandler(props) {
 
         try {
           setMatrix([]);
+          setCurrentFile('');
           const fileExt = file.name.split('.').pop();
           if (fileExt !== 'txt') {
             throw new Error(
@@ -51,10 +51,7 @@ export function FileHandler(props) {
           setCurrentFile(file.name);
           setMatrix(matrix);
           showMessage(messageToast, 'success', 'File has been uploaded');
-          // setShowErrorMsg(false);
         } catch (error) {
-          // setErrorMsg(error.message);
-          // setShowErrorMsg(true);
           showMessage(messageToast, 'error', error.message);
         }
       });
@@ -66,6 +63,19 @@ export function FileHandler(props) {
   return (
     <div>
       <Toast ref={messageToast} position="bottom-right" />
+      <Panel
+        header="Used file"
+        pt={{
+          root: { className: styles.Panel },
+          header: { className: styles.PanelHeader },
+        }}
+      >
+        {currentFile === '' ? (
+          <p>No file used</p>
+        ) : (
+          <UsedFileContainer fileName={currentFile} />
+        )}
+      </Panel>
       <FileUpload
         name="demo[]"
         ref={fileUploadRef}
@@ -76,10 +86,21 @@ export function FileHandler(props) {
           <p className="m-0">Drag and drop files to here to upload.</p>
         }
         onBeforeUpload={handleFileUpload}
+        pt={{
+          root: { className: styles.Panel },
+          buttonbar: { className: styles.PanelHeader },
+        }}
       />
-      <Panel header="Used file">
-        <p>{currentFile}</p>
-      </Panel>
+    </div>
+  );
+}
+
+function UsedFileContainer(props) {
+  const { fileName } = props;
+  return (
+    <div className={styles.UsedFileContainer}>
+      <i className="pi pi-file"></i>
+      <p>{fileName}</p>
     </div>
   );
 }

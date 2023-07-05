@@ -11,17 +11,8 @@ export function GraphImg(props) {
   const [graphData, setGraphData] = useState(null);
 
   useEffect(() => {
-    // const example = [
-    //   [0, 4, 0, 0, 0, 0, 0],
-    //   [4, 0, 1, 3, 0, 0, 0],
-    //   [0, 1, 0, 2, 0, 0, 0],
-    //   [0, 3, 2, 0, 1, 0, 0],
-    //   [0, 0, 0, 1, 0, 2, 0],
-    //   [0, 0, 0, 0, 2, 0, 3],
-    //   [0, 0, 0, 0, 0, 3, 0],
-    // ];
     setGraphData(getVisGraph(matrix));
-  }, [matrix]);
+  }, []);
 
   useEffect(() => {
     if (graphData) {
@@ -43,3 +34,13 @@ export function GraphImg(props) {
 
   return <div ref={visNetworkRef} className={styles.GraphImg} />;
 }
+
+// const example = [
+//   [0, 4, 0, 0, 0, 0, 0],
+//   [4, 0, 1, 3, 0, 0, 0],
+//   [0, 1, 0, 2, 0, 0, 0],
+//   [0, 3, 2, 0, 1, 0, 0],
+//   [0, 0, 0, 1, 0, 2, 0],
+//   [0, 0, 0, 0, 2, 0, 3],
+//   [0, 0, 0, 0, 0, 3, 0],
+// ];

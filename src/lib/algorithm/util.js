@@ -1,4 +1,4 @@
-const { isMatrixValid } = require('@/lib/input-processing/inputProcessing');
+const { isMatrixValid } = require('../input-processing/inputProcessing');
 module.exports = { initializeEdges, getVisGraph, removeVertex, addVertex };
 
 function initializeEdges(adjMatrix) {
