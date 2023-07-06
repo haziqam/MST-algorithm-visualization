@@ -8,3 +8,9 @@
   margin: 20px auto;
   justify-content: space-evenly;
 }
+
+.visualizationContainer {
+  width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}

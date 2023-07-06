@@ -5,6 +5,7 @@ import { Panel } from 'primereact/panel';
 import { Toast } from 'primereact/toast';
 import 'primeicons/primeicons.css';
 import styles from './components.module.css';
+import { showMessage } from './ToastShowMsg';
 const {
   getMatrixFromString,
 } = require('@/lib/input-processing/inputProcessing');
@@ -13,17 +14,7 @@ export function FileHandler(props) {
   const fileUploadRef = useRef(null);
   const [currentFile, setCurrentFile] = useState('');
   const messageToast = useRef(null);
-
   const { setMatrix } = props;
-
-  const showMessage = (ref, severity, message) => {
-    ref.current.show({
-      severity: severity,
-      summary: severity[0].toUpperCase().concat(severity.substring(1)),
-      detail: message,
-      life: 4000,
-    });
-  };
 
   const handleFileUpload = async (event) => {
     const file = fileUploadRef.current.getFiles()[0];
@@ -50,9 +41,14 @@ export function FileHandler(props) {
           const matrix = getMatrixFromString(fileContent);
           setCurrentFile(file.name);
           setMatrix(matrix);
-          showMessage(messageToast, 'success', 'File has been uploaded');
+          showMessage(
+            messageToast,
+            'success',
+            'Success',
+            'File has been uploaded'
+          );
         } catch (error) {
-          showMessage(messageToast, 'error', error.message);
+          showMessage(messageToast, 'error', 'Error', error.message);
         }
       });
 

@@ -1,12 +1,13 @@
 'use client';
-
 import React, { useEffect, useRef, useState } from 'react';
 import 'primereact/resources/themes/tailwind-light/theme.css';
 import 'primereact/resources/primereact.min.css';
+import { Panel } from 'primereact/panel';
 import { FileHandler } from '@/components/FileHandler';
 import { UserConfig } from '@/components/UserConfig';
 import { GraphImg } from '@/components/GraphImg';
 import styles from './page.module.css';
+import componentStyles from '../components/components.module.css';
 
 export default function Home() {
   const [matrix, setMatrix] = useState([]);
@@ -41,18 +42,31 @@ export default function Home() {
           />
           <FileHandler setMatrix={setMatrix} />
         </div>
-        <div className="">
-          <div>{renderInitialGraph ? <GraphImg matrix={matrix} /> : null}</div>
-          <div>{renderMST ? <GraphImg matrix={MST} /> : null}</div>
-        </div>
+        <Panel
+          header="Initial Graph"
+          pt={{
+            root: {
+              className: `${componentStyles.Panel} ${styles.visualizationContainer}`,
+            },
+            header: { className: componentStyles.PanelHeader },
+            toggleableContent: { className: styles.visualizationContent },
+          }}
+        >
+          {renderInitialGraph ? <GraphImg matrix={matrix} /> : null}
+        </Panel>
+        <Panel
+          header="Minimum Spanning Tree"
+          pt={{
+            root: {
+              className: `${componentStyles.Panel} ${styles.visualizationContainer}`,
+            },
+            header: { className: componentStyles.PanelHeader },
+            toggleableContent: { className: styles.visualizationContent },
+          }}
+        >
+          {renderMST ? <GraphImg matrix={MST} /> : null}
+        </Panel>
       </main>
     </>
   );
 }
-
-export const renderElement = (componentStateSetter) => {
-  componentStateSetter(false);
-  setTimeout(() => {
-    componentStateSetter(true);
-  }, 100);
-};

@@ -20,7 +20,7 @@ function primMST(adjMatrix) {
   key[0] = 0;
   parent[0] = -1;
 
-  for (let count = 0; count < numOfVertices - 1; count++) {
+  for (let count = 0; count < numOfVertices; count++) {
     let u = minKey(key, visitedSet, numOfVertices);
     if (u === -1) {
       throw new Error("Graph isn't connected. Can't use Prim's algorithm");
